@@ -13,6 +13,8 @@ const createBook = async function (req, res) {
     try {
         let data = req.body
         const { title, excerpt, userId, ISBN, category, subcategory, releasedAt} = data;
+
+    //**********AWS*********//
         aws.config.update({
             accessKeyId: "AKIAY3L35MCRUJ6WPO6J",
             secretAccessKey: "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",
@@ -35,39 +37,16 @@ const createBook = async function (req, res) {
                  if(err) {
                      return reject({"error": err})
                  }
-                 console.log(data)
-                 console.log("file uploaded succesfully")
+                 //console.log(data)
+                 //console.log("file uploaded succesfully")
                  return resolve(data.Location)
              })
          
-             // let data= await s3.upload( uploadParams)
-             // if( data) return data.Location
-             // else return "there is an error"
-         
+            
             })
          }
-        
-        try{
-            let files= req.files
-            if(files && files.length>0){
-                //upload to s3 and get the uploaded link
-                // res.send the link back to frontend/postman
-                let uploadedFileURL= await uploadFile( files[0] )
-                console.log(uploadedFileURL)
-                let bookCover =await bookModel.findOne({data: uploadedFileURL})
-              // if(bookCover){
-               //return res.status(400).send({ status: false, message: "ISBN is already present" })
-        //}
-               // res.status(201).send({msg: "file uploaded succesfully", data: uploadedFileURL})
-            }
-            else{
-                res.status(400).send({ msg: "No file found" })
-            }
-            
-        }
-        catch(err){
-            res.status(500).send({msg: err})
-        }
+        //**********validation of create API*********//
+       
         //Check if Body is empty or not
         if (Object.keys(data).length === 0) {
             return res.status(400).send({ status: false, message: "data must be required" })
@@ -132,7 +111,7 @@ const createBook = async function (req, res) {
         if (checkIsbn) {
             return res.status(400).send({ status: false, message: "ISBN is already present" })
         }
-
+        //aws file uploading
         let files= req.files
         if(!files ){
             return res.status(400).send({ msg: "No file found" })
